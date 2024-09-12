@@ -31,3 +31,12 @@
     order: unset;
   }
 }
+
+.columns h2 {
+  font-size: 24px;
+}
+
+
+.columns p {
+  font-size: 16px;
+}

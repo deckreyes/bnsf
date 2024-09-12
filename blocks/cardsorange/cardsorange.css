@@ -1,0 +1,44 @@
+.cardsorange > ul {
+  list-style: none;
+  margin: 0;
+  padding: 28px;
+  display: grid;
+  grid-template-columns: auto auto auto auto;
+  grid-gap: 45px;
+  background-color: rgba(200, 102, 10, 0.877);
+}
+
+.cardsorange > ul > li {
+    background-color: var(--background-color);
+}
+
+.cardsorange .cardsorange-card-body {
+  margin: 16px;
+}
+
+.cardsorange .cardsorange-card-image {
+  line-height: 0;
+  text-align: center;
+  padding-top: 28px;
+}
+
+.cardsorange .cardsorange-card-body > *:first-child {
+  margin-top: 0;
+}
+
+.cardsorange > ul > li img {
+  text-align: center;
+}
+
+.cardsorange h2 {
+  font-size: 24px;
+}
+
+.cardsorange h3 {
+  font-size: 24px;
+  color: orangered;
+}
+
+.cardsorange p {
+  font-size: 16px;
+}
