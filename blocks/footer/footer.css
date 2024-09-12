@@ -1,35 +1,75 @@
 footer {
   padding: 2rem;
-  /*background-color: var(--light-color);*/
-  background-color: #10091a;
+  /*background-color: white;*/
+  background-color: black;
   font-size: var(--body-font-size-s);
-  text-align: center;
+  
 }
 
-footer a:any-link{
+footer img {
+  width: 500px;
+  height: auto;
+}
+
+footer .footerone {
+  text-indent: 100px;
   color: white;
+  font-size: 15px;
+  line-height: 75%;
+
+  display: flex;
+  align-items: flex-start; 
+  flex-direction: row; 
+  flex-wrap: nowrap; 
+
+  height: 100%;
+  padding: 15px;
+  gap: 1px;
+
+  
 }
 
-footer .footer {
-  max-width: 1200px;
-  margin: auto;
-}
-
-footer .copyright {
+footer .footertwo {
+  text-indent: 100px;
   color: white;
-  text-transform: uppercase;
+  position: relative;
+  font-weight: 500;
+  font-size: medium;
+  display: flex;
+  column-gap: 10px;
+  margin-right: 400px;
+  font-size: 15px;
+
+  height: 100%;
+  padding: 15px;
+
+
+  border: 1px inset white;
+  border-top: transparent;
+  border-left-color: transparent;
+  border-bottom-color: gray;
+  border-right: transparent;
+
+}
+
+footer .footertwo img {
+  width: 275px;
+  height: auto;
+}
+
+footer .footerthree {
+  text-indent: 100px;
+  color: white;
   font-size: 12px;
-  padding-top: 30px;
-  padding-bottom: 30px;
-}
 
-footer .footer p {
-  margin: 0;
-}
+  display: flex;
+  align-items: flex-start; 
+  flex-direction: row; 
+ 
 
-footer .footermenu {
-    padding: 20px; 
-    color: white;
-    display: grid;
-    grid-template-columns: auto auto auto auto;
+  
+  padding: 35px;
+  gap: 5px;  
+
+
 }

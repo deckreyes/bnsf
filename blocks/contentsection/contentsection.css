@@ -1,0 +1,22 @@
+.contentsection {
+    background-color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    width: 900px;
+    padding-left: 10px;
+    padding-right: 20px;
+    padding-top: 25px;
+    }
+
+.contentsection :first-child {
+    font-size: 15px;
+ }
+
+ .contentsection div:nth-child(2) {
+  padding-bottom: 45px;
+}
+
+.contentsection div:nth-child(2) img{
+  width: 150px;
+}

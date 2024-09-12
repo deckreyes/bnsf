@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Adobe. All rights reserved.
+ * Copyright 2023 Adobe. All rights reserved.
  * This file is licensed to you under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License. You may obtain a copy
  * of the License at http://www.apache.org/licenses/LICENSE-2.0
@@ -22,9 +22,6 @@
  * for instance the href of a link, or a search term
  */
 function sampleRUM(checkpoint, data = {}) {
-  const SESSION_STORAGE_KEY = 'aem-rum';
-  sampleRUM.baseURL = sampleRUM.baseURL
-    || new URL(window.RUM_BASE == null ? 'https://rum.hlx.page' : window.RUM_BASE, window.location);
   sampleRUM.defer = sampleRUM.defer || [];
   const defer = (fnname) => {
     sampleRUM[fnname] = sampleRUM[fnname] || ((...args) => sampleRUM.defer.push({ fnname, args }));
@@ -56,21 +53,12 @@ function sampleRUM(checkpoint, data = {}) {
         .join('');
       const random = Math.random();
       const isSelected = random * weight < 1;
-      const firstReadTime = window.performance ? window.performance.timeOrigin : Date.now();
+      const firstReadTime = Date.now();
       const urlSanitizers = {
         full: () => window.location.href,
         origin: () => window.location.origin,
         path: () => window.location.href.replace(/\?.*$/, ''),
       };
-      // eslint-disable-next-line max-len
-      const rumSessionStorage = sessionStorage.getItem(SESSION_STORAGE_KEY)
-        ? JSON.parse(sessionStorage.getItem(SESSION_STORAGE_KEY))
-        : {};
-      // eslint-disable-next-line max-len
-      rumSessionStorage.pages = (rumSessionStorage.pages ? rumSessionStorage.pages : 0)
-        + 1
-        /* noise */ + (Math.floor(Math.random() * 20) - 10);
-      sessionStorage.setItem(SESSION_STORAGE_KEY, JSON.stringify(rumSessionStorage));
       // eslint-disable-next-line object-curly-newline, max-len
       window.hlx.rum = {
         weight,
@@ -80,10 +68,8 @@ function sampleRUM(checkpoint, data = {}) {
         firstReadTime,
         sampleRUM,
         sanitizeURL: urlSanitizers[window.hlx.RUM_MASK_URL || 'path'],
-        rumSessionStorage,
       };
     }
-
     const { weight, id, firstReadTime } = window.hlx.rum;
     if (window.hlx && window.hlx.rum && window.hlx.rum.isSelected) {
       const knownProperties = [
@@ -99,35 +85,32 @@ function sampleRUM(checkpoint, data = {}) {
         'FID',
         'LCP',
         'INP',
-        'TTFB',
       ];
       const sendPing = (pdata = data) => {
-        // eslint-disable-next-line max-len
-        const t = Math.round(
-          window.performance ? window.performance.now() : Date.now() - firstReadTime,
-        );
         // eslint-disable-next-line object-curly-newline, max-len, no-use-before-define
         const body = JSON.stringify(
           {
-            weight, id, referer: window.hlx.rum.sanitizeURL(), checkpoint, t, ...data,
+            weight,
+            id,
+            referer: window.hlx.rum.sanitizeURL(),
+            checkpoint,
+            t: Date.now() - firstReadTime,
+            ...data,
           },
           knownProperties,
         );
-        const url = new URL(`.rum/${weight}`, sampleRUM.baseURL).href;
+        const url = `https://rum.hlx.page/.rum/${weight}`;
+        // eslint-disable-next-line no-unused-expressions
         navigator.sendBeacon(url, body);
         // eslint-disable-next-line no-console
         console.debug(`ping:${checkpoint}`, pdata);
       };
       sampleRUM.cases = sampleRUM.cases || {
-        load: () => sampleRUM('pagesviewed', { source: window.hlx.rum.rumSessionStorage.pages }) || true,
         cwv: () => sampleRUM.cwv(data) || true,
         lazy: () => {
           // use classic script to avoid CORS issues
           const script = document.createElement('script');
-          script.src = new URL(
-            '.rum/@adobe/helix-rum-enhancer@^1/src/index.js',
-            sampleRUM.baseURL,
-          ).href;
+          script.src = 'https://rum.hlx.page/.rum/@adobe/helix-rum-enhancer@^1/src/index.js';
           document.head.appendChild(script);
           return true;
         },
@@ -412,18 +395,16 @@ function decorateButtons(element) {
 
 /**
  * Add <img> for icon, prefixed with codeBasePath and optional prefix.
- * @param {Element} [span] span element with icon classes
- * @param {string} [prefix] prefix to be added to icon src
- * @param {string} [alt] alt text to be added to icon
+ * @param {span} [element] span element with icon classes
+ * @param {string} [prefix] prefix to be added to icon the src
  */
-function decorateIcon(span, prefix = '', alt = '') {
+function decorateIcon(span, prefix = '') {
   const iconName = Array.from(span.classList)
     .find((c) => c.startsWith('icon-'))
     .substring(5);
   const img = document.createElement('img');
   img.dataset.iconName = iconName;
   img.src = `${window.hlx.codeBasePath}${prefix}/icons/${iconName}.svg`;
-  img.alt = alt;
   img.loading = 'lazy';
   span.append(img);
 }
@@ -468,10 +449,7 @@ function decorateSections(main) {
       const meta = readBlockConfig(sectionMeta);
       Object.keys(meta).forEach((key) => {
         if (key === 'style') {
-          const styles = meta.style
-            .split(',')
-            .filter((style) => style)
-            .map((style) => toClassName(style.trim()));
+          const styles = meta.style.split(',').map((style) => toClassName(style.trim()));
           styles.forEach((style) => section.classList.add(style));
         } else {
           section.dataset[toCamelCase(key)] = meta[key];

@@ -5,7 +5,7 @@
       "id": "library",
       "title": "Library",
       "environments": [ "edit" ],
-      "url": "https://main--farm2florist--deckreyes.hlx.page/tools/sidekick/library.html",
+      "url": "https://main--ibm--deckreyes.hlx.page/tools/sidekick/library.html",
       "includePaths": [ "**.docx**" ]
     },
     {
